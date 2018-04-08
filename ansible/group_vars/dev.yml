@@ -1,0 +1,8 @@
+---
+# user account used to ssh to the hosts
+remote_user: appuser
+
+# non-sudo user to be created for running process
+action_user: boonheng
+
+action_user_pw: 12345

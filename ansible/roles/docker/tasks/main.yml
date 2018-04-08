@@ -1,2 +1,68 @@
 ---
 # tasks file for docker
+
+- name: install yum utilities
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - yum-utils
+    - epel-release
+  become: yes
+
+- name: install basic os utilities
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - vim
+    - tmux
+    - htop
+    - xclip
+  become: yes
+
+- name: install docker dependencies
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - device-mapper-persistent-data
+    - lvm2
+  become: yes
+
+- name: add docker yum repo
+  get_url: 
+    url: https://download.docker.com/linux/centos/docker-ce.repo
+    dest: /etc/yum.repos.d/docker-ce.repo
+  become: yes
+ 
+- name: disable obsoletes option to workaround installation of older docker versions
+  ini_file:
+    path: /etc/yum.conf
+    section: main
+    option: obsoletes
+    value: 0
+  become: yes
+ 
+- name: install docker
+  yum:
+    name: "docker-ce-{{ docker_version }}"
+    state: present
+  become: yes
+  
+- name: start docker service
+  service:
+    name: docker
+    state: started
+    enabled: yes
+  become: yes
+
+- name: add app user to docker group
+  user:
+    name: appusr
+    groups: docker
+    append: yes
+  become: yes
+
+
+
