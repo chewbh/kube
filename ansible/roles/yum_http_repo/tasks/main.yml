@@ -1,2 +1,64 @@
 ---
-# tasks file for yum_http_repo
+# tasks file for yum_repo setup over http
+
+#- name: remove httpd
+#  yum:
+#    name: httpd
+#    state: absent
+
+- name: install packages needed for repo
+  yum: 
+    name: "{{ item }}"
+    state: present
+  with_items: 
+    - httpd
+    - createrepo
+  notify: restart httpd service
+
+- name: create httpd virtual host configuration
+  template:
+    src: templates/virtualhost.conf.j2
+    dest: /etc/httpd/conf.d
+
+- name: create dirs for repo
+  file: 
+    path: "{{ item }}"
+    owner: apache
+    group: apache
+    state: directory
+  with_items:
+    - "{{ yum_repo_path }}"
+
+- name: populate yum repo
+  copy: 
+    src: "{{ yum_repo_src_path }}" 
+    dest: "{{ yum_repo_path }}" 
+    mode: 0775
+    owner: apache
+    group: apache
+    seuser: system_u
+    serole: object_r
+    setype: httpd_sys_content_t
+  notify: restart httpd service 
+
+#- name: httpd.conf
+#  lineinfile:
+#    dest: '/etc/httpd/conf/http.conf'
+#    regexp: "^Alias "
+#    insertafter: "^DocumentRoot "
+#    line: "^Alias "
+
+#- name: create symlink to repo
+#  file: 
+#    src: "{{ yum_repo_path }}"
+#    dest: /var/www/html/repo
+#    state: link
+#  notify: restart httpd service
+
+- name: allow web on firewalld
+  firewalld:
+    service: http
+    permanent: true
+    state: enabled
+    immediate: yes   
+

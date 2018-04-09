@@ -1,9 +1,12 @@
 
+[control]
+192.168.56.101
+
 [nodes]
 node-1 ansible_host=192.168.56.102
 node-2 ansible_host=192.168.56.103
 
 [dev:children]
 nodes
-
+control
 
