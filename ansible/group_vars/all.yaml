@@ -1,0 +1,7 @@
+#
+# Global variables for all nodes
+#
+---
+
+HOST_ARCH: amd64
+

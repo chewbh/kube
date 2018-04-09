@@ -1,0 +1,11 @@
+---
+# tasks file for base role
+
+- name: install yum utilities
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - yum-utils
+  become: yes
+

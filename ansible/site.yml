@@ -1,8 +1,9 @@
 ---
-- name: deploy docker
-  hosts: nodes
+- name: test common
+  hosts: control
   become: yes
 
   roles:
-    - docker
+    - common 
+#    - docker
 

@@ -1,10 +1,12 @@
 ---
 # tasks file for yum_repo setup over http
 
-#- name: remove httpd
-#  yum:
-#    name: httpd
-#    state: absent
+- name: allow web on firewalld
+  firewalld:
+    service: http
+    permanent: true
+    state: enabled
+    immediate: yes
 
 - name: install packages needed for repo
   yum: 
@@ -13,52 +15,22 @@
   with_items: 
     - httpd
     - createrepo
-  notify: restart httpd service
+  notify: restart httpd
 
 - name: create httpd virtual host configuration
   template:
-    src: templates/virtualhost.conf.j2
-    dest: /etc/httpd/conf.d
+    src: virtualhost.conf.j2
+    dest: /etc/httpd/conf.d/virtualhost.conf
 
 - name: create dirs for repo
   file: 
-    path: "{{ item }}"
-    owner: apache
-    group: apache
-    state: directory
-  with_items:
-    - "{{ yum_repo_path }}"
-
-- name: populate yum repo
-  copy: 
-    src: "{{ yum_repo_src_path }}" 
-    dest: "{{ yum_repo_path }}" 
-    mode: 0775
+    path: "{{ yum_server_repo_path }}"
     owner: apache
     group: apache
     seuser: system_u
     serole: object_r
     setype: httpd_sys_content_t
-  notify: restart httpd service 
+    state: directory
 
-#- name: httpd.conf
-#  lineinfile:
-#    dest: '/etc/httpd/conf/http.conf'
-#    regexp: "^Alias "
-#    insertafter: "^DocumentRoot "
-#    line: "^Alias "
-
-#- name: create symlink to repo
-#  file: 
-#    src: "{{ yum_repo_path }}"
-#    dest: /var/www/html/repo
-#    state: link
-#  notify: restart httpd service
-
-- name: allow web on firewalld
-  firewalld:
-    service: http
-    permanent: true
-    state: enabled
-    immediate: yes   
+- include_tasks: populate_package.yaml
 

@@ -2,9 +2,9 @@
 
 IndexOptions FancyIndexing HTMLTable VersionSort
 
-Alias /repo/ "{{ yum_repo_path }}/"
+Alias /repo/ "{{ yum_server_repo_path }}/"
 
-<Directory "{{ yum_repo_path }}">
+<Directory "{{ yum_server_repo_path }}">
     Options Indexes FollowSymlinks
     AllowOverride None
     Require all granted

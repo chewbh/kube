@@ -1,6 +1,6 @@
 ---
 # handlers file for yum_http_repo
-- name: restart httpd service
+- name: restart httpd
   service:
     name: httpd
     state: restarted

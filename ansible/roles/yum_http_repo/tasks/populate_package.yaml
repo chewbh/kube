@@ -1,0 +1,18 @@
+---
+- name: copy yum packages and repos to server
+  copy:
+    src: "{{ yum_repo_src_path }}"
+    dest: "{{ yum_server_repo_path }}"
+    mode: 0775
+    owner: apache
+    group: apache
+    seuser: system_u
+    serole: object_r
+    setype: httpd_sys_content_t
+  notify: restart httpd
+
+- name: create repo for epel-addon
+  command: "createrepo -v {{yum_server_repo_path }}/epel-addon/{{ ansible_distribution_major_version }}/{{ ansible_architecture }}"
+  ignore_errors: yes
+  notify: restart httpd
+

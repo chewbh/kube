@@ -4,17 +4,23 @@
 #- name: setup app user
 #  user: generate_ssh_key=yes name={{action_user}} password={{action_user_pw | password_hash('sha512')}} shell=/bin/bash
 
-- name: install yum utilities
-  yum:
-    name: "{{ item }}"
-    state: present
-  with_items:
-    - yum-utils
-#    - epel-release
-  become: yes
+- set_fact: yum_server = "{{ hostvars[groups['yum-server'][0]].inventory_hostname }}"
 
-#- name: install htop
-#  yum: name: 
+- debug: var={{ yum_server }}
+
+- name: add EPEL addon yum repo
+  yum_repository:
+    name: epel-addon
+    description: Additional packages from EPEL channel
+    baseurl: "http://{{ yum_server }}/repo/epel-addon/$releasever/$basearch/"
+    file: epel-addon
+
+- name: install epel release (if exist)
+  yum:
+    name: epel-release
+    state: present
+  become: yes
+  ignore_errors: yes
 
 - name: install other basic os utilities
   yum:
@@ -29,6 +35,9 @@
     - tree
     - rsync
     - zsh
+    - htop
+    - jq
+    - xclip
   become: yes
 
 

@@ -8,7 +8,7 @@ yum_repo_src_path: /binaries/
 
 # the actual path of the yum repo 
 # that contains the packages 
-# on the http server
-yum_repo_path: /data/repo/
-
+# on the http server.
+# -- Note: Should not end with '/'
+yum_server_repo_path: /data/repo
 

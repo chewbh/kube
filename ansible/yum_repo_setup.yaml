@@ -1,10 +1,9 @@
 ---
 - name: yum repo over http setup
-  hosts: control
-  gather_facts: no
+  hosts: yum-server
+  gather_facts: yes
   become: yes
 
   roles:
-    - common
     - yum_http_repo
 
