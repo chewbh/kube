@@ -4,16 +4,18 @@
 #- name: setup app user
 #  user: generate_ssh_key=yes name={{action_user}} password={{action_user_pw | password_hash('sha512')}} shell=/bin/bash
 
-- set_fact: yum_server = "{{ hostvars[groups['yum-server'][0]].inventory_hostname }}"
+- set_fact: 
+    yum_server: "{{ hostvars[groups['yum-server'][0]].inventory_hostname }}"
 
-- debug: var={{ yum_server }}
+- debug: var=yum_server
 
 - name: add EPEL addon yum repo
   yum_repository:
     name: epel-addon
     description: Additional packages from EPEL channel
-    baseurl: "http://{{ yum_server }}/repo/epel-addon/$releasever/$basearch/"
+    baseurl: "http://{{ yum_server }}/repo/epel-addon/{{ ansible_distribution_major_version }}/{{ ansible_architecture }}/"
     file: epel-addon
+    gpgcheck: no
 
 - name: install epel release (if exist)
   yum:

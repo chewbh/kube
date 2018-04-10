@@ -1,0 +1,8 @@
+---
+- name: setup new docker
+  hosts: control
+  become: yes
+
+  roles:
+    - docker
+

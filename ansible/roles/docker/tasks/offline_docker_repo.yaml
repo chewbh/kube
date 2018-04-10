@@ -1,0 +1,15 @@
+---
+- debug: var=is_online
+
+- set_fact:
+    yum_server: "{{ hostvars[groups['yum-server'][0]].inventory_hostname }}"
+
+- name: add offline docker yum repo
+  yum_repository:
+    name: offline-docker-ce-stable
+    description: Docker CE packages from official repo made offline
+    baseurl: "http://{{ yum_server }}/repo/docker-ce/{{ ansible_distribution_major_version }}/{{ ansible_architecture }}/stable/"
+    file: offline-docker-ce
+    gpgkey: "http://{{ yum_server }}/repo/docker-ce/gpg"
+
+

@@ -32,5 +32,7 @@
     setype: httpd_sys_content_t
     state: directory
 
-- include_tasks: populate_package.yaml
+- import_tasks: update_epel_pkgs.yaml
+- import_tasks: update_docker_pkgs.yaml
+
 

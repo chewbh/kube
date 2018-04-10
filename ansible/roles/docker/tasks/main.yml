@@ -1,26 +1,6 @@
 ---
 # tasks file for docker
 
-- name: install yum utilities
-  yum:
-    name: "{{ item }}"
-    state: present
-  with_items:
-    - yum-utils
-    - epel-release
-  become: yes
-
-- name: install basic os utilities
-  yum:
-    name: "{{ item }}"
-    state: present
-  with_items:
-    - vim
-    - tmux
-    - htop
-    - xclip
-  become: yes
-
 - name: install docker dependencies
   yum:
     name: "{{ item }}"
@@ -30,11 +10,7 @@
     - lvm2
   become: yes
 
-- name: add docker yum repo
-  get_url: 
-    url: https://download.docker.com/linux/centos/docker-ce.repo
-    dest: /etc/yum.repos.d/docker-ce.repo
-  become: yes
+- include_tasks: "{{ is_online | ternary('online', 'offline') }}_docker_repo.yaml"
  
 - name: disable obsoletes option to workaround installation of older docker versions
   ini_file:
@@ -57,9 +33,14 @@
     enabled: yes
   become: yes
 
+- set_fact:
+    docker_user: "{{ hostvars[inventory_hostname].ansible_user }}"
+
+- debug: var=docker_user
+
 - name: add app user to docker group
   user:
-    name: appusr
+    name: "{{ docker_user }}"
     groups: docker
     append: yes
   become: yes
