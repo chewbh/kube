@@ -1,6 +1,8 @@
 ---
 # tasks file for docker
 
+- include_tasks: "{{ is_online | ternary('online', 'offline') }}_docker_repo.yaml"
+
 - name: install docker dependencies
   yum:
     name: "{{ item }}"
@@ -9,8 +11,6 @@
     - device-mapper-persistent-data
     - lvm2
   become: yes
-
-- include_tasks: "{{ is_online | ternary('online', 'offline') }}_docker_repo.yaml"
  
 - name: disable obsoletes option to workaround installation of older docker versions
   ini_file:
@@ -25,25 +25,23 @@
     name: "docker-ce-{{ docker_version }}"
     state: present
   become: yes
-  
-- name: start docker service
-  service:
-    name: docker
-    state: started
-    enabled: yes
-  become: yes
+  notify: restart docker
 
-- set_fact:
-    docker_user: "{{ hostvars[inventory_hostname].ansible_user }}"
+- name: get user running ansible
+  local_action: command whoami
+  register: remote_user
+  become: no
 
-- debug: var=docker_user
+- name: determine docker administrator (app user)
+  set_fact:
+    docker_user: "{{ ansible_user | default(remote_user.stdout) }}"
 
-- name: add app user to docker group
+- name: add administrator (app user) to docker group
   user:
     name: "{{ docker_user }}"
     groups: docker
     append: yes
   become: yes
 
-
+- import_tasks: install_docker_compose.yaml
 

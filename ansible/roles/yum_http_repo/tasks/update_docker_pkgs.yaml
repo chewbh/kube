@@ -11,7 +11,31 @@
     setype: httpd_sys_content_t
   notify: restart httpd
 
-- name: set correct permission to expose epel-addon repodata over http
+- name: copy legacy docker packages and repos to server
+  copy:
+    src: "{{ yum_repo_src_path }}/docker-engine/"
+    dest: "{{ yum_server_repo_path }}/docker-engine/"
+    mode: '0775'
+    owner: apache
+    group: apache
+    seuser: system_u
+    serole: object_r
+    setype: httpd_sys_content_t
+  notify: restart httpd
+
+- name: copy docker-compose to server
+  copy:
+    src: "{{ yum_repo_src_path }}/docker/"
+    dest: "{{ yum_server_repo_path }}/docker/"
+    mode: '0775'
+    owner: apache
+    group: apache
+    seuser: system_u
+    serole: object_r
+    setype: httpd_sys_content_t
+  notify: restart httpd
+
+- name: set correct permission to expose packages
   file:
     dest: "{{ yum_server_repo_path }}"
     mode: '0775'

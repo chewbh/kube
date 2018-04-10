@@ -1,8 +1,0 @@
----
-- name: deploy docker
-  hosts: nodes
-  become: yes
-
-  roles:
-    - docker
-

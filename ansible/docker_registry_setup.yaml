@@ -1,0 +1,8 @@
+---
+- name: setup new docker registry
+  hosts: docker-registry
+  become: no
+
+  roles:
+    - docker_registry
+

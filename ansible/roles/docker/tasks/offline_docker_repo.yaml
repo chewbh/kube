@@ -11,5 +11,14 @@
     baseurl: "http://{{ yum_server }}/repo/docker-ce/{{ ansible_distribution_major_version }}/{{ ansible_architecture }}/stable/"
     file: offline-docker-ce
     gpgkey: "http://{{ yum_server }}/repo/docker-ce/gpg"
+    enabled: "{{ not use_legacy_docker_repo }}"
 
+- name: add offline legacy docker yum repo
+  yum_repository:
+    name: offline-legacy-docker-engine
+    description: Docker-Engine (legacy) packages from official repo made offline
+    baseurl: "http://{{ yum_server }}/repo/docker-engine/{{ ansible_distribution_major_version }}/"
+    file: offline-docker-engine-legacy
+    gpgkey: "http://{{ yum_server }}/repo/docker-engine/gpg"
+    enabled: "{{ use_legacy_docker_repo }}"
 

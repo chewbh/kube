@@ -5,3 +5,16 @@
 
 HOST_ARCH: amd64
 
+# indicate if servers are air-gap and thus, 
+# has access to yum repository over internet
+is_online: false
+
+# indicate if repo containing older docker-engine 
+# should be used instead of that containing docker-ce
+use_legacy_docker_repo: no
+
+# the version of docker compose 
+# to be installed or used
+docker_compose_version: 1.21.0
+
+

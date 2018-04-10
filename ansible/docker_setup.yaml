@@ -6,3 +6,18 @@
   roles:
     - docker
 
+#  tasks:
+#    - name: get user running ansible
+#      local_action: command whoami
+#      register: remote_user
+#      become: no
+
+#    - set_fact:
+#        docker_user: "{{ ansible_user | default(remote_user.stdout) }}"
+
+#    - debug: var=docker_user
+
+#    - debug: var=ansible_user_id
+#    - debug: var=ansible_user
+#    - debug: var=ansible_ssh_user
+

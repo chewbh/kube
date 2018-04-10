@@ -1,0 +1,5 @@
+---
+# defaults file for docker_registry
+
+docker_images_src_path: /binaries/docker_images
+docker_images_path: /data/docker_images

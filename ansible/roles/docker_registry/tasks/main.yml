@@ -1,0 +1,27 @@
+---
+# tasks file for docker_registry
+
+- name: create dirs to hold docker registry images during setup
+  file:
+    path: "{{ docker_images_path }}"
+    owner: "{{ docker_user }}"
+    group: "{{ docker_user }}"
+#    seuser: system_u
+#    serole: object_r
+#    setype: httpd_sys_content_t
+    state: directory
+  become: yes
+
+- name: copy docker registry images to targeted server
+  copy:
+    src: "{{ docker_images_src_path }}/"
+    dest: "{{ docker_images_path }}/"
+    mode: '0775'
+#    owner: apache
+#    group: apache
+#    seuser: system_u
+#    serole: object_r
+#    setype: httpd_sys_content_t
+
+- name: Load registry image from archive 
+

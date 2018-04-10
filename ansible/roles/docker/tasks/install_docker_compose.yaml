@@ -1,0 +1,10 @@
+---
+- name: install docker-compose
+  get_url: 
+    url: "http://{{ yum_server }}/repo/docker/{{ docker_compose_version }}/docker-compose"
+    dest: "/usr/local/bin/docker-compose"
+  become: true
+
+- name: make docker-compose executable
+  file: dest=/usr/local/bin/docker-compose mode=a+x
+    
