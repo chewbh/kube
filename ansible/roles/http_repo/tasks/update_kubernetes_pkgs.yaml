@@ -1,0 +1,24 @@
+---
+- name: copy kubernetes packages and repos to server
+  copy:
+    src: "{{ yum_repo_src_path }}/kubernetes/"
+    dest: "{{ yum_server_repo_path }}/kubernetes/"
+    mode: '0775'
+    owner: apache
+    group: apache
+    seuser: system_u
+    serole: object_r
+    setype: httpd_sys_content_t
+  notify: restart httpd
+
+- name: set correct permission to expose packages
+  file:
+    dest: "{{ yum_server_repo_path }}"
+    mode: '0775'
+    owner: apache
+    group: apache
+    seuser: system_u
+    serole: object_r
+    setype: httpd_sys_content_t
+    
+

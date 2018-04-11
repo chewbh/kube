@@ -33,6 +33,14 @@
     state: directory
 
 - import_tasks: update_epel_pkgs.yaml
+  tags: ['base_pkgs']
+
 - import_tasks: update_docker_pkgs.yaml
+  tags: ['docker']
+
 - import_tasks: update_pip_pkgs.yaml
+  tags: ['pip']
+
+- import_tasks: update_kubernetes_pkgs.yaml
+  tags: ['kubernetes']
 

@@ -1,9 +1,10 @@
 ---
-- name: docker-enable
+- name: kubernetes-enable
   hosts: control
   become: yes
 
   roles:
-    - docker
-    - docker_reg_ssl
+     - { role: repo_consumer, tags: ['kubernetes'] }
+#    - docker
+#    - docker_reg_ssl
 

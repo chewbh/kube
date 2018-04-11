@@ -1,0 +1,29 @@
+---
+# tasks file for repo_consumer
+
+- set_fact:
+    yum_server: "{{ hostvars[groups['yum-server'][0]].inventory_hostname }}"
+  tags:
+    - always
+
+- name: add offline kubernetes yum repo
+  yum_repository:
+    name: offline-kubernetes
+    description: Kubernetes packages from official Google repo made offline
+    baseurl: "http://{{ yum_server }}/repo/kubernetes/repos/kubernetes-el{{ ansible_distribution_major_version }}-{{ ansible_architecture }}"
+    file: offline-kubernetes
+    gpgkey: "http://{{ yum_server }}/repo/kubernetes/yum-key.gpg http://{{ yum_server }}/repo/kubernetes/rpm-package-key.gpg"
+    repo_gpgcheck: True
+    gpgcheck: True
+    enabled: True
+  become: yes
+  tags:
+    - kubernetes
+
+- name: install kubeadm
+  yum:
+    name: kubeadm
+    state: latest
+  become: yes
+  tags:
+    - kubernetes
