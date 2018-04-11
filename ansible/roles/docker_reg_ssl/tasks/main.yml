@@ -20,3 +20,14 @@
   shell: "openssl s_client -showcerts -connect {{ docker_registry_server }}:443 </dev/null 2>/dev/null | openssl x509 -outform PEM > /etc/docker/certs.d/{{ docker_registry_server }}/{{ docker_registry_server }}.crt"
   become: yes
 
+- name: place certificate (Docker Registry) for at OS level
+  copy:
+    src: "/etc/docker/certs.d/{{ docker_registry_server }}/{{ docker_registry_server }}.crt"
+    dest: "/etc/pki/ca-trust/source/anchors/{{ docker_registry_server }}.crt"
+    remote_src: yes
+  become: yes
+
+- name: trust tls certificate(Docker Registry) at OS level
+  command: update-ca-trust
+  become: yes
+

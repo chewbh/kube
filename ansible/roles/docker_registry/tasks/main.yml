@@ -42,6 +42,10 @@
   openssl_csr:
     path: "{{ tls_cert_path }}/{{ ansible_fqdn }}.csr"
     privatekey_path: "{{ tls_cert_path }}/{{ ansible_fqdn }}.pem"
+    country_name: "{{ tls_certs_country }}"
+    locality_name: "{{ tls_certs_locality }}"
+    state_or_province_name: "{{ tls_certs_state }}"
+    organization_name: "{{ tls_certs_organization }}"
     common_name: "{{ ansible_fqdn }}"
   become: yes
 
