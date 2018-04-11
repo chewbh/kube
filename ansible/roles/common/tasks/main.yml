@@ -47,4 +47,18 @@
     - python-pip
   become: yes
 
+#- name: create alternate TMPDIR as /tmp is noexec
+#  file:
+#    dest: "{{ lookup('env','HOME') }}/{{ tmp_dir }}"
+#    mode: "775"   
+#    state: directory
+#  become: yes
+
+- name: Use alternate TMPDIR in user home directory as /tmp is noexec
+  template: 
+    src: tmpdir.sh.j2
+    dest: /etc/profile.d/tmpdir.sh
+    mode: "755"
+  become: yes
+
 
