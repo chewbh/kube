@@ -6,9 +6,6 @@
     path: "{{ docker_images_path }}"
     owner: "{{ docker_user }}"
     group: "{{ docker_user }}"
-#    seuser: system_u
-#    serole: object_r
-#    setype: httpd_sys_content_t
     state: directory
   become: yes
 
@@ -17,11 +14,86 @@
     src: "{{ docker_images_src_path }}/"
     dest: "{{ docker_images_path }}/"
     mode: '0775'
-#    owner: apache
-#    group: apache
-#    seuser: system_u
-#    serole: object_r
-#    setype: httpd_sys_content_t
 
-- name: Load registry image from archive 
+- name: Load registry docker image from archive
+  docker_image:
+    name: registry
+    tag: "{{ registry_tag }}"
+    load_path: "{{ docker_images_path }}/{{ registry_tag }}__registry.tar"
+
+- name: Load registry ui docker image from archive
+  docker_image:
+    name: "{{ registry_ui.namespace }}/{{ registry_ui.name }}"
+    tag: "{{ registry_ui.tag }}"
+    load_path: "{{ docker_images_path }}/{{ registry_ui.tag }}__{{ registry_ui.name }}__{{ registry_ui.namespace }}.tar"
+
+- name: create a TLS certs directory
+  file:
+    path: "{{ tls_cert_path }}"
+    state: directory
+  become: yes
+
+- name: generate an OpenSSL private key
+  openssl_privatekey: 
+    path: "{{ tls_cert_path }}/{{ ansible_fqdn }}.pem"
+  become: yes
+      
+- name: generate an OpenSSL CSR (for registry)
+  openssl_csr:
+    path: "{{ tls_cert_path }}/{{ ansible_fqdn }}.csr"
+    privatekey_path: "{{ tls_cert_path }}/{{ ansible_fqdn }}.pem"
+    common_name: "{{ ansible_fqdn }}"
+  become: yes
+
+- name: generate self-signed OpenSSL certificate (for registry) with key and CSR
+  openssl_certificate:
+    path: "{{ tls_cert_path }}/{{ ansible_fqdn }}.crt"
+    privatekey_path: "{{ tls_cert_path }}/{{ ansible_fqdn }}.pem"
+    csr_path: "{{ tls_cert_path }}/{{ ansible_fqdn }}.csr"
+    provider: selfsigned
+  become: yes
+
+- name: start up registry
+  docker_container: 
+    name: registry
+    image: "registry:{{ registry_tag }}"
+    state: started
+    restart_policy: always
+    ports:
+      - "443:443"
+    volumes:
+      - "{{ registry_data_path }}:/var/lib/registry"
+      - "{{ tls_cert_path }}:/certs"
+    env:
+      REGISTRY_HTTP_ADDR: 0.0.0.0:443
+      REGISTRY_HTTP_TLS_CERTIFICATE: "/certs/{{ ansible_fqdn }}.crt"
+      REGISTRY_HTTP_TLS_KEY: "/certs/{{ ansible_fqdn }}.pem"
+
+- name: start up registry ui
+  docker_container:
+    name: registry-ui
+    image: "{{ registry_ui.namespace }}/{{ registry_ui.name }}:{{ registry_ui.tag }}"
+    state: started
+    restart_policy: always
+    ports: 
+      - "80:80"
+    volumes:
+      - "{{ tls_cert_path }}/{{ ansible_fqdn }}.crt:/etc/apache2/server.crt:ro"
+      - "{{ tls_cert_path }}/{{ ansible_fqdn }}.pem:/etc/apache2/server.key:ro"
+    env:
+      ENV_MODE_BROWSE_ONLY: false
+      ENV_DOCKER_REGISTRY_HOST: "{{ ansible_fqdn }}"
+      ENV_DOCKER_REGISTRY_PORT: 443
+      ENV_DOCKER_REGISTRY_USE_SSL: 1
+
+- name: allow access to registry's host on port 443 (firewalld)
+  firewalld:
+    service: "{{ item }}"
+    permanent: true
+    state: enabled
+    immediate: yes
+  with_items:
+    - https
+  become: yes
+
 

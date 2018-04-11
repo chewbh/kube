@@ -1,9 +1,9 @@
 ---
-- name: test common
+- name: docker-enable
   hosts: control
   become: yes
 
   roles:
-    - common 
-#    - docker
+    - docker
+    - docker_reg_ssl
 

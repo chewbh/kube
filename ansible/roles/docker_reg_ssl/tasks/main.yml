@@ -1,0 +1,22 @@
+---
+# tasks file for docker-reg-ssl
+- name: gather info on docker-registry
+  setup:
+  delegate_to: "{{ item }}"
+  delegate_facts: True
+  with_items: "{{ groups['docker-registry'] }}"
+  when: hostvars[item]['ansible_default_ipv4'] is not defined 
+
+- set_fact:
+    docker_registry_server: "{{ hostvars[groups['docker-registry'][0]].ansible_fqdn }}"
+
+- name: "create docker registry tls cert directory in {{ ansible_fqdn }}"
+  file:
+    dest: "/etc/docker/certs.d/{{ docker_registry_server }}"
+    state: directory
+  become: yes
+
+- name: add tls certificate from docker registry
+  shell: "openssl s_client -showcerts -connect {{ docker_registry_server }}:443 </dev/null 2>/dev/null | openssl x509 -outform PEM > /etc/docker/certs.d/{{ docker_registry_server }}/{{ docker_registry_server }}.crt"
+  become: yes
+

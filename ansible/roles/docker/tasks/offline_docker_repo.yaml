@@ -12,6 +12,7 @@
     file: offline-docker-ce
     gpgkey: "http://{{ yum_server }}/repo/docker-ce/gpg"
     enabled: "{{ not use_legacy_docker_repo }}"
+  become: yes
 
 - name: add offline legacy docker yum repo
   yum_repository:
@@ -21,4 +22,4 @@
     file: offline-docker-engine-legacy
     gpgkey: "http://{{ yum_server }}/repo/docker-engine/gpg"
     enabled: "{{ use_legacy_docker_repo }}"
-
+  become: yes

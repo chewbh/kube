@@ -1,5 +1,40 @@
 ---
 # defaults file for docker_registry
 
+# source file path where archives of 
+# docker images are residing on 
+# ansible control node
 docker_images_src_path: /binaries/docker_images
+
+# destination file path where archives of 
+# docker images (from docker_image_src_path) 
+# will be placed on docker registry node
 docker_images_path: /data/docker_images
+
+# file path of bind mounted docker volume
+# containing docker registry data
+registry_data_path: /data/registry_data
+
+# version of the docker registry (docker image)
+registry_tag: 2
+
+# information on the docker image 
+# for docker registry UI
+registry_ui:
+  name: docker-registry-frontend
+  namespace: konradkleine
+  tag: v2
+
+tls_cert_path: /certs
+
+ssl_certs_country: "SG"
+ssl_certs_locality: "Singapore"
+ssl_certs_organization: "Avenger"
+ssl_certs_state: "Singapore"
+ssl_certs_common_name: "{{ansible_fqdn}}"
+ssl_certs_days: "3650"
+ssl_certs_fields: "/C={{ssl_certs_country}}/ST={{ssl_certs_state}}/L={{ssl_certs_locality}}/O={{ssl_certs_organization}}/CN={{ssl_certs_common_name}}"
+
+ssl_certs_path_owner: "root"
+ssl_certs_path_group: "root"
+

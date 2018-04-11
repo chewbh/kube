@@ -1,4 +1,4 @@
 ---
 # defaults file for docker
-docker_version: 17.03.2.ce
-
+docker_version: 17.06.2.ce
+# 1.13.1

@@ -1,6 +1,13 @@
 ---
 # tasks file for docker
 
+- name: install docker-py
+  pip:
+    name: "docker[tls]" 
+    extra_args: "-v --no-index --trusted-host {{ yum_server }} --find-links http://{{ yum_server }}/repo/pip/docker-py/"
+    state: present
+  become: yes
+
 - include_tasks: "{{ is_online | ternary('online', 'offline') }}_docker_repo.yaml"
 
 - name: install docker dependencies

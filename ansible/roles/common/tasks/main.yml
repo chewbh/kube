@@ -16,13 +16,17 @@
     baseurl: "http://{{ yum_server }}/repo/epel-addon/{{ ansible_distribution_major_version }}/{{ ansible_architecture }}/"
     file: epel-addon
     gpgcheck: no
+    enabled: yes
+  become: yes
+  when: not is_online
+ 
 
-- name: install epel release (if exist)
+- name: install epel release (if online)
   yum:
     name: epel-release
     state: present
   become: yes
-  ignore_errors: yes
+  when: is_online
 
 - name: install other basic os utilities
   yum:
@@ -40,6 +44,7 @@
     - htop
     - jq
     - xclip
+    - python-pip
   become: yes
 
 

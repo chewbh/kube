@@ -17,4 +17,13 @@ use_legacy_docker_repo: no
 # to be installed or used
 docker_compose_version: 1.21.0
 
+# the full path to the stored yum packages
+# that will be copied to the http server
+# running yum repo
+yum_repo_src_path: /binaries/
 
+# the actual path of the yum repo
+# that contains the packages
+# on the http server.
+# -- Note: Should not end with '/'
+yum_server_repo_path: /data/repo

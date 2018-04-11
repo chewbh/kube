@@ -34,5 +34,5 @@
 
 - import_tasks: update_epel_pkgs.yaml
 - import_tasks: update_docker_pkgs.yaml
-
+- import_tasks: update_pip_pkgs.yaml
 

@@ -5,4 +5,5 @@ wget -P /binaries/epel-addon/7/x86_64/Packages http://dl.fedoraproject.org/pub/e
 wget -P /binaries/epel-addon/7/x86_64/Packages http://dl.fedoraproject.org/pub/epel/7/x86_64/Packages/x/xclip-0.12-5.el7.x86_64.rpm
 wget -P /binaries/epel-addon/7/x86_64/Packages http://dl.fedoraproject.org/pub/epel/7/x86_64/Packages/o/oniguruma-5.9.5-3.el7.x86_64.rpm
 
-
+wget -P /binaries/epel-addon/7/x86_64/Packages http://dl.fedoraproject.org/pub/epel/7/x86_64/Packages/p/python2-pip-8.1.2-5.el7.noarch.rpm
+wget -P /binaries/epel-addon/7/x86_64/Packages http://dl.fedoraproject.org/pub/epel/7/x86_64/Packages/p/python34-pip-8.1.2-5.el7.noarch.rpm

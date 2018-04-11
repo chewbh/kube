@@ -6,3 +6,23 @@
   roles:
     - docker_registry
 
+#  tasks:
+#    - name: get list of docker images
+#      find:
+#        paths: "{{ docker_images_path }}"
+#        patterns: "*.tar"
+#      register: raw_docker_img_files
+
+#    - set_fact: 
+#        docker_img_files: "{{ raw_docker_img_files.files | map(attribute='path') | map('upper') | list }}"
+
+#    - debug: var=docker_img_files
+
+#    - name: Load image from archive and push to a private registry
+#      docker_image:
+#        name: localhost:5000/myimages/sinatra
+#        tag: v1
+#        push: yes
+#        load_path: "{{ item }}"
+#      with_items: "{{ docker_img_files  }}"
+
