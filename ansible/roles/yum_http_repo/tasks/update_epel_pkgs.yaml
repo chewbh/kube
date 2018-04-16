@@ -25,5 +25,5 @@
     seuser: system_u
     serole: object_r
     setype: httpd_sys_content_t
-    
+    recurse: yes
 
