@@ -1,6 +1,8 @@
 #!/bin/bash
 
-BASE_PATH=/binaries
+BASE_PATH=$PWD/binaries
+mkdir -p $BASE_PATH
+
 REPOS_NAME=kubernetes
 PKGS_SUBPATH=kubernetes-el7-x86_64
 
@@ -44,8 +46,11 @@ done
 #gpgcheck=1
 #repo_gpgcheck=1
 #gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+#exclude=kube*
 #EOF
 
 #setenforce 0
-#yum install -y kubelet kubeadm kubectl
+#yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
 #systemctl enable kubelet && systemctl start kubelet
+
+
